@@ -1,19 +1,19 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "PathSpineEdModeToolkit.h"
-#include "PathSpineEdMode.h"
+#include "BuildInSplineEditorEdModeToolkit.h"
+#include "BuildInSplineEditorEdMode.h"
 #include "Engine/Selection.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Text/STextBlock.h"
 #include "EditorModeManager.h"
 
-#define LOCTEXT_NAMESPACE "FPathSpineEdModeToolkit"
+#define LOCTEXT_NAMESPACE "FBuildInSplineEditorEdModeToolkit"
 
-FPathSpineEdModeToolkit::FPathSpineEdModeToolkit()
+FBuildInSplineEditorEdModeToolkit::FBuildInSplineEditorEdModeToolkit()
 {
 }
 
-void FPathSpineEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
+void FBuildInSplineEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 {
 	struct Locals
 	{
@@ -106,19 +106,19 @@ void FPathSpineEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHo
 	FModeToolkit::Init(InitToolkitHost);
 }
 
-FName FPathSpineEdModeToolkit::GetToolkitFName() const
+FName FBuildInSplineEditorEdModeToolkit::GetToolkitFName() const
 {
-	return FName("PathSpineEdMode");
+	return FName("BuildInSplineEditorEdMode");
 }
 
-FText FPathSpineEdModeToolkit::GetBaseToolkitName() const
+FText FBuildInSplineEditorEdModeToolkit::GetBaseToolkitName() const
 {
-	return NSLOCTEXT("PathSpineEdModeToolkit", "DisplayName", "PathSpineEdMode Tool");
+	return NSLOCTEXT("BuildInSplineEditorEdModeToolkit", "DisplayName", "BuildInSplineEditorEdMode Tool");
 }
 
-class FEdMode* FPathSpineEdModeToolkit::GetEditorMode() const
+class FEdMode* FBuildInSplineEditorEdModeToolkit::GetEditorMode() const
 {
-	return GLevelEditorModeTools().GetActiveMode(FPathSpineEdMode::EM_PathSpineEdModeId);
+	return GLevelEditorModeTools().GetActiveMode(FBuildInSplineEditorEdMode::EM_BuildInSplineEditorEdModeId);
 }
 
 #undef LOCTEXT_NAMESPACE

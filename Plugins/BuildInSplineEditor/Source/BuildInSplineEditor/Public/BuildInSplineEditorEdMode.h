@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "EdMode.h"
 
-class FPathSpineEdMode : public FEdMode
+class FBuildInSplineEditorEdMode : public FEdMode
 {
 public:
-	const static FEditorModeID EM_PathSpineEdModeId;
+	const static FEditorModeID EM_BuildInSplineEditorEdModeId;
 public:
-	FPathSpineEdMode();
-	virtual ~FPathSpineEdMode();
+	FBuildInSplineEditorEdMode();
+	virtual ~FBuildInSplineEditorEdMode();
 
 	// FEdMode interface
 	virtual void Enter() override;

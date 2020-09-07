@@ -2,21 +2,21 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "PathSpine",
-	"Description": "GS Test",
+	"FriendlyName": "BuildInSplineEditor",
+	"Description": "Spline Editor by buildin spline component",
 	"Category": "Other",
-	"CreatedBy": "HuangCheng",
+	"CreatedBy": "Huang Cheng",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"SupportURL": "",
 	"CanContainContent": false,
-	"IsBetaVersion": true,
+	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "PathSpine",
+			"Name": "BuildInSplineEditor",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}

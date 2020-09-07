@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "Toolkits/BaseToolkit.h"
 
-class FPathSpineEdModeToolkit : public FModeToolkit
+class FBuildInSplineEditorEdModeToolkit : public FModeToolkit
 {
 public:
 
-	FPathSpineEdModeToolkit();
+	FBuildInSplineEditorEdModeToolkit();
 	
 	/** FModeToolkit interface */
 	virtual void Init(const TSharedPtr<IToolkitHost>& InitToolkitHost) override;

@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class PathSpine : ModuleRules
+public class BuildInSplineEditor : ModuleRules
 {
-	public PathSpine(ReadOnlyTargetRules Target) : base(Target)
+	public BuildInSplineEditor(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
