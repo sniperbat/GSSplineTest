@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "Toolkits/BaseToolkit.h"
 
-class FBuildInSplineEditorEdModeToolkit : public FModeToolkit
+class FSplinePathEdtiorEdModeToolkit : public FModeToolkit
 {
 public:
 
-	FBuildInSplineEditorEdModeToolkit();
+	FSplinePathEdtiorEdModeToolkit();
 	
 	/** FModeToolkit interface */
 	virtual void Init(const TSharedPtr<IToolkitHost>& InitToolkitHost) override;
@@ -23,4 +23,10 @@ public:
 private:
 
 	TSharedPtr<SWidget> ToolkitWidget;
+
+private:
+	FReply OnBtnAddPath () const;
+	// FReply OnBtnRemovePath ();
+	// FReply OnBtnAddPoint (FVector Position);
+	// FReply OnBtnRemovePoint (int32 Index);
 };

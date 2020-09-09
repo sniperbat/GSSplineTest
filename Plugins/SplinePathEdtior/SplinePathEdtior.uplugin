@@ -2,8 +2,8 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "BuildInSplineEditor",
-	"Description": "Spline Editor by buildin spline component",
+	"FriendlyName": "SplinePathEdtior",
+	"Description": "GS Job Test",
 	"Category": "Other",
 	"CreatedBy": "Huang Cheng",
 	"CreatedByURL": "",
@@ -16,7 +16,7 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "BuildInSplineEditor",
+			"Name": "SplinePathEdtior",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}
