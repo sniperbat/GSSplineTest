@@ -61,10 +61,10 @@ private:
     UPROPERTY ()
     class UMaterialInstanceDynamic* SelectedControlPointMaterial;
 
-    TArray<TSharedPtr<ASplinePathActor>> PathList;
-    TWeakObjectPtr<ASplinePathActor> SelectedPath;
+    TArray<ASplinePathActor*> PathList;
+    TWeakObjectPtr<ASplinePathActor> SelectedPathPointOwner;
     int32 SelectedPathPointIndex;
-    int32 SelectedControlPointInOut;
+    int32 SelectedPathPointControl;
 public:
 	FSplinePathEditorEdMode ();
 	virtual ~FSplinePathEditorEdMode ();

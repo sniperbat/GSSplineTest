@@ -45,7 +45,7 @@ void FSplinePathEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTo
 				[
 					SNew (SButton)
 					.Text (FText::FromString("Remove Path"))
-					//.OnClicked_Static (&Locals::OnBtnRemovePath)
+				        .OnClicked (this, &FSplinePathEditorEdModeToolkit::OnBtnRemovePath)
 				]
 
 		];
@@ -53,26 +53,35 @@ void FSplinePathEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTo
 	FModeToolkit::Init(InitToolkitHost);
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------
 FName FSplinePathEditorEdModeToolkit::GetToolkitFName() const
 {
-	return FName("SplinePathEdtiorEdMode");
+	return FName("SplinePathEditorEdMode");
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------
 FText FSplinePathEditorEdModeToolkit::GetBaseToolkitName() const
 {
-	return NSLOCTEXT("SplinePathEdtiorEdModeToolkit", "DisplayName", "SplinePathEdtiorEdMode Tool");
+	return NSLOCTEXT("SplinePathEditorEdModeToolkit", "DisplayName", "SplinePathEditorEdMode Tool");
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------
 class FEdMode* FSplinePathEditorEdModeToolkit::GetEditorMode() const
 {
 	return GLevelEditorModeTools().GetActiveMode(FSplinePathEditorEdMode::EM_SplinePathEditorEdModeId);
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------
 FReply FSplinePathEditorEdModeToolkit::OnBtnAddPath () const
 {
 	static_cast<FSplinePathEditorEdMode*>(GetEditorMode())->AddPath ();
 	return FReply::Handled ();
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------
+FReply FSplinePathEditorEdModeToolkit::OnBtnRemovePath () const {
+	static_cast<FSplinePathEditorEdMode*>(GetEditorMode ())->RemovePath ();
+	return FReply::Handled ();
+}
 
 #undef LOCTEXT_NAMESPACE

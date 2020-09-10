@@ -26,7 +26,7 @@ private:
 
 private:
 	FReply OnBtnAddPath () const;
-	// FReply OnBtnRemovePath ();
+	FReply OnBtnRemovePath () const;
 	// FReply OnBtnAddPoint (FVector Position);
 	// FReply OnBtnRemovePoint (int32 Index);
 };

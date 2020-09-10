@@ -58,9 +58,9 @@ void FSplinePathEditorEdMode::Enter()
 	SelectedControlPointMaterial->SetVectorParameterValue ("GizmoColor", FLinearColor::Green);
 
 	//---------------------------------------------------------------------------------------------------
-    SelectedPath = nullptr;
+    SelectedPathPointOwner = nullptr;
     SelectedPathPointIndex = -1;
-    SelectedControlPointInOut = -1;
+    SelectedPathPointControl = -1;
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -115,14 +115,15 @@ void FSplinePathEditorEdMode::DrawPath(ASplinePathActor* Actor, FPrimitiveDrawIn
 	const int PointCount = Actor->PathPoints.Num();
     for(int i = 0; i < PointCount; i++) {
         const FPathPoint &PathPoint = Actor->PathPoints[i];
-        const bool IsPointSelected = SelectedPath == Actor && SelectedPathPointIndex == i;
+        const bool IsPointSelected = SelectedPathPointOwner == Actor && SelectedPathPointIndex == i;
         DrawPosition(PathPoint.Position, i, IsPointSelected, PDI);
+    	
         if (PointCount > 1) {
-            if (i != 0) {
-                DrawControlPoint(PathPoint, i, false, SelectedControlPointInOut == 0, PDI);
+            if (i > 0) {
+                DrawControlPoint(PathPoint, i, false, SelectedPathPointControl == 0, PDI);
             }
-            if (i != PointCount - 1) {
-                DrawControlPoint(PathPoint, i, true, SelectedControlPointInOut == 0, PDI);
+            if (i < PointCount - 1) {
+                DrawControlPoint(PathPoint, i, true, SelectedPathPointControl == 1, PDI);
             }
         }
     }
@@ -156,34 +157,34 @@ void FSplinePathEditorEdMode::DrawControlPoint(const FPathPoint& Point, int Inde
 void FSplinePathEditorEdMode::AddPath ()
 {
     UWorld* World = GEditor->GetEditorWorldContext().World();
-	SelectedPath = World->SpawnActor<ASplinePathActor>(FVector::ZeroVector, FRotator::ZeroRotator);
-    PathList.Add(MakeShareable(SelectedPath.Get()));
-    GEditor->SelectActor(SelectedPath.Get(), true, true);
+    ASplinePathActor* SelectedPath = World->SpawnActor<ASplinePathActor>(FVector::ZeroVector, FRotator::ZeroRotator);
+    PathList.Add(SelectedPath);
+    GEditor->SelectActor(SelectedPath, true, true);
 }
 
 //---------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdMode::RemovePath ()
 {
-	if (SelectedPath != nullptr) {
-	    SelectedPath->Destroy();
-        SelectedPath = nullptr;
-	}
+    for (FSelectionIterator It (GEditor->GetSelectedActorIterator ()); It; ++It) {
+        ASplinePathActor* Actor = Cast<ASplinePathActor> (*It);
+        if (Actor) {
+            PathList.RemoveAll ([&](const ASplinePathActor* PathActor)
+                {
+                    return PathActor == Actor;
+                });
+            Actor->Destroy ();
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdMode::AddPoint (const FVector& Position)
 {
-	if (SelectedPath != nullptr){
-
-	}
 }
 
 //---------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdMode::RemovePoint (int32 Index)
 {
-    if (SelectedPath != nullptr){
-
-    }
 }
 
 //---------------------------------------------------------------------------------------------------
