@@ -4,41 +4,67 @@
 
 #include "CoreMinimal.h"
 #include "EdMode.h"
+#include "SplinePathActor.h"
 
+//---------------------------------------------------------------------------------------------------
 struct HSplinePositionProxy : HHitProxy
 {
 	DECLARE_HIT_PROXY ();
-	HSplinePositionProxy(): HHitProxy(HPP_Wireframe)
+	HSplinePositionProxy(int Index): HHitProxy(HPP_Wireframe)
 	{
+	    this->Index = Index;
 	}
+
+	int Index;
 };
 
+//---------------------------------------------------------------------------------------------------
 struct HSplineControlPointProxy : HHitProxy
 {
 	DECLARE_HIT_PROXY ();
-	HSplineControlPointProxy () : HHitProxy (HPP_Wireframe)
+	HSplineControlPointProxy (int Index, bool IsIn) : HHitProxy (HPP_Wireframe)
 	{
+        this->Index = Index;
+        this->IsIn = IsIn;
 	}
+    int Index;
+	bool IsIn;
 };
 
+//---------------------------------------------------------------------------------------------------
+struct HSplineSegmentProxy : HHitProxy
+{
+    DECLARE_HIT_PROXY ();
+    HSplineSegmentProxy () : HHitProxy (HPP_Wireframe)
+    {
+    }
+};
+
+//---------------------------------------------------------------------------------------------------
 
 class FSplinePathEditorEdMode : public FEdMode
 {
 public:
 	const static FEditorModeID EM_SplinePathEditorEdModeId;
+    UPROPERTY (EditAnywhere)
+    bool IsShowAllPath;
+private:
+    UPROPERTY ()
+    class UMaterialInstanceDynamic* PositionMaterial;
 
-	UPROPERTY ()
-	class UMaterialInstanceDynamic* PositionMaterial;
+    UPROPERTY ()
+    class UMaterialInstanceDynamic* SelectedPositionMaterial;
 
-	UPROPERTY ()
-	class UMaterialInstanceDynamic* SelectedPositionMaterial;
+    UPROPERTY ()
+    class UMaterialInstanceDynamic* ControlPointMaterial;
 
-	UPROPERTY ()
-	class UMaterialInstanceDynamic* ControlPointMaterial;
+    UPROPERTY ()
+    class UMaterialInstanceDynamic* SelectedControlPointMaterial;
 
-	UPROPERTY ()
-	class UMaterialInstanceDynamic* SelectedControlPointMaterial;
-	
+    TArray<TSharedPtr<ASplinePathActor>> PathList;
+    TWeakObjectPtr<ASplinePathActor> SelectedPath;
+    int32 SelectedPathPointIndex;
+    int32 SelectedControlPointInOut;
 public:
 	FSplinePathEditorEdMode ();
 	virtual ~FSplinePathEditorEdMode ();
@@ -48,15 +74,20 @@ public:
 	virtual void Exit() override;
 	//virtual void Tick(FEditorViewportClient* ViewportClient, float DeltaTime) override;
 	virtual void Render(const FSceneView* View, FViewport* Viewport, FPrimitiveDrawInterface* PDI) override;
-	//virtual void ActorSelectionChangeNotify() override;
+	virtual void ActorSelectionChangeNotify() override;
 	bool UsesToolkits() const override;
 	// End of FEdMode interface
 
-
-public:
+	// FEdMode Public Method for Toolkit
 	void AddPath ();
 	void RemovePath ();
 
-	void AddPoint (FVector Position);
+	void AddPoint (const FVector& Position);
 	void RemovePoint (int32 Index);
+    // End of Public Method for Toolkit
+
+private:
+    void DrawPath(ASplinePathActor* Actor, FPrimitiveDrawInterface* PDI);
+    void DrawPosition(const FVector& Pos, int Index, bool IsSelected, FPrimitiveDrawInterface* PDI);
+    void DrawControlPoint(const FPathPoint& Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI);
 };

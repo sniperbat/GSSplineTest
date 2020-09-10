@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ASplinePathActor.generated.h"
+#include "SplinePathActor.generated.h"
 
 USTRUCT()
 struct FPathPoint
@@ -17,13 +17,13 @@ struct FPathPoint
 };
 
 UCLASS()
-class SPLINEPATHEDTIOR_API AASplinePathActor : public AActor
+class SPLINEPATHEDTIOR_API ASplinePathActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AASplinePathActor();
+	ASplinePathActor();
 
 protected:
 	// Called when the game starts or when spawned
