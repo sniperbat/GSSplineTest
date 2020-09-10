@@ -47,7 +47,14 @@ void FSplinePathEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTo
 					.Text (FText::FromString("Remove Path"))
 				        .OnClicked (this, &FSplinePathEditorEdModeToolkit::OnBtnRemovePath)
 				]
-
+			+ SVerticalBox::Slot ()
+				.HAlign (HAlign_Center)
+				.AutoHeight ()
+				[
+					SNew (SButton)
+					.Text (FText::FromString ("Add Random Point"))
+				        .OnClicked (this, &FSplinePathEditorEdModeToolkit::OnBtnAddPoint)
+				]
 		];
 
 	FModeToolkit::Init(InitToolkitHost);
@@ -84,4 +91,10 @@ FReply FSplinePathEditorEdModeToolkit::OnBtnRemovePath () const {
 	return FReply::Handled ();
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------
+FReply FSplinePathEditorEdModeToolkit::OnBtnAddPoint () const {
+
+	static_cast<FSplinePathEditorEdMode*>(GetEditorMode ())->AddPoint(FMath::VRand () * 50);
+	return FReply::Handled ();
+}
 #undef LOCTEXT_NAMESPACE

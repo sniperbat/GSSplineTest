@@ -82,7 +82,7 @@ public:
 	void AddPath ();
 	void RemovePath ();
 
-	void AddPoint (const FVector& Position);
+	void AddPoint (const FVector& Position) const;
 	void RemovePoint (int32 Index);
     // End of Public Method for Toolkit
 
