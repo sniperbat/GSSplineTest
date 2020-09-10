@@ -87,7 +87,7 @@ public:
     // End of Public Method for Toolkit
 
 private:
-    void DrawPath(ASplinePathActor* Actor, FPrimitiveDrawInterface* PDI);
-    void DrawPosition(const FVector& Pos, int Index, bool IsSelected, FPrimitiveDrawInterface* PDI);
-    void DrawControlPoint(const FPathPoint& Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI);
+    void DrawPath(ASplinePathActor* Actor, FPrimitiveDrawInterface* PDI) const;
+    void DrawPosition(const FVector& Pos, int Index, bool IsSelected, FPrimitiveDrawInterface* PDI) const;
+    void DrawControlPoint(const FPathPoint& Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) const;
 };

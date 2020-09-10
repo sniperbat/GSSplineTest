@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "SplinePathEdtiorEdModeToolkit.h"
-#include "SplinePathEdtiorEdMode.h"
+#include "SplinePathEditorEdModeToolkit.h"
+#include "SplinePathEditorEdMode.h"
 #include "Engine/Selection.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Text/STextBlock.h"
@@ -9,11 +9,11 @@
 
 #define LOCTEXT_NAMESPACE "FSplinePathEdtiorEdModeToolkit"
 
-FSplinePathEdtiorEdModeToolkit::FSplinePathEdtiorEdModeToolkit()
+FSplinePathEditorEdModeToolkit::FSplinePathEditorEdModeToolkit ()
 {
 }
 
-void FSplinePathEdtiorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
+void FSplinePathEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 {
 	struct Locals
 	{
@@ -37,7 +37,7 @@ void FSplinePathEdtiorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTo
 				[
 					SNew (SButton)
 					.Text (FText::FromString("Add Path"))
-					.OnClicked(this, &FSplinePathEdtiorEdModeToolkit::OnBtnAddPath)
+					.OnClicked(this, &FSplinePathEditorEdModeToolkit::OnBtnAddPath)
 				]
 			+ SVerticalBox::Slot()
 				.HAlign(HAlign_Center)
@@ -47,28 +47,28 @@ void FSplinePathEdtiorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTo
 					.Text (FText::FromString("Remove Path"))
 					//.OnClicked_Static (&Locals::OnBtnRemovePath)
 				]
-		
+
 		];
-		
+
 	FModeToolkit::Init(InitToolkitHost);
 }
 
-FName FSplinePathEdtiorEdModeToolkit::GetToolkitFName() const
+FName FSplinePathEditorEdModeToolkit::GetToolkitFName() const
 {
 	return FName("SplinePathEdtiorEdMode");
 }
 
-FText FSplinePathEdtiorEdModeToolkit::GetBaseToolkitName() const
+FText FSplinePathEditorEdModeToolkit::GetBaseToolkitName() const
 {
 	return NSLOCTEXT("SplinePathEdtiorEdModeToolkit", "DisplayName", "SplinePathEdtiorEdMode Tool");
 }
 
-class FEdMode* FSplinePathEdtiorEdModeToolkit::GetEditorMode() const
+class FEdMode* FSplinePathEditorEdModeToolkit::GetEditorMode() const
 {
 	return GLevelEditorModeTools().GetActiveMode(FSplinePathEditorEdMode::EM_SplinePathEditorEdModeId);
 }
 
-FReply FSplinePathEdtiorEdModeToolkit::OnBtnAddPath () const
+FReply FSplinePathEditorEdModeToolkit::OnBtnAddPath () const
 {
 	static_cast<FSplinePathEditorEdMode*>(GetEditorMode())->AddPath ();
 	return FReply::Handled ();

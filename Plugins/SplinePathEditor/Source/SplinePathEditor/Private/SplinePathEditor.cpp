@@ -1,17 +1,17 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "SplinePathEdtior.h"
-#include "SplinePathEdtiorEdMode.h"
+#include "SplinePathEditor.h"
+#include "SplinePathEditorEdMode.h"
 
-#define LOCTEXT_NAMESPACE "FSplinePathEdtiorModule"
+#define LOCTEXT_NAMESPACE "FSplinePathEditorModule"
 
-void FSplinePathEdtiorModule::StartupModule()
+void FSplinePathEditorModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-	FEditorModeRegistry::Get().RegisterMode<FSplinePathEditorEdMode>(FSplinePathEditorEdMode::EM_SplinePathEditorEdModeId, LOCTEXT("SplinePathEdtiorEdModeName", "SplinePathEdtiorEdMode"), FSlateIcon(), true);
+	FEditorModeRegistry::Get().RegisterMode<FSplinePathEditorEdMode>(FSplinePathEditorEdMode::EM_SplinePathEditorEdModeId, LOCTEXT("SplinePathEditorEdModeName", "SplinePathEditorEdMode"), FSlateIcon(), true);
 }
 
-void FSplinePathEdtiorModule::ShutdownModule()
+void FSplinePathEditorModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
@@ -20,4 +20,4 @@ void FSplinePathEdtiorModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FSplinePathEdtiorModule, SplinePathEdtior)
+IMPLEMENT_MODULE(FSplinePathEditorModule, SplinePathEditor)

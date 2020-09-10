@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FSplinePathEdtiorModule : public IModuleInterface
+class FSplinePathEditorModule : public IModuleInterface
 {
 public:
 

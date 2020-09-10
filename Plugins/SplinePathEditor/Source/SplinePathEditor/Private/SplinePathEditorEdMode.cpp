@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "SplinePathEdtiorEdMode.h"
-#include "SplinePathEdtiorEdModeToolkit.h"
+#include "SplinePathEditorEdMode.h"
+#include "SplinePathEditorEdModeToolkit.h"
 #include "Toolkits/ToolkitManager.h"
 #include "EditorModeManager.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -23,13 +23,15 @@ IMPLEMENT_HIT_PROXY (HSplineSegmentProxy, HHitProxy);
 const FEditorModeID FSplinePathEditorEdMode::EM_SplinePathEditorEdModeId = TEXT("EM_SplinePathEditorEdMode");
 
 //---------------------------------------------------------------------------------------------------
-FSplinePathEditorEdMode::FSplinePathEditorEdMode ()
+FSplinePathEditorEdMode::FSplinePathEditorEdMode()
 {
+
 }
 
 //---------------------------------------------------------------------------------------------------
-FSplinePathEditorEdMode::~FSplinePathEditorEdMode ()
+FSplinePathEditorEdMode::~FSplinePathEditorEdMode()
 {
+
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -39,10 +41,9 @@ void FSplinePathEditorEdMode::Enter()
 
 	if (!Toolkit.IsValid() && UsesToolkits())
 	{
-		Toolkit = MakeShareable(new FSplinePathEdtiorEdModeToolkit);
+		Toolkit = MakeShareable(new FSplinePathEditorEdModeToolkit);
 		Toolkit->Init(Owner->GetToolkitHost());
 	}
-
 	//---------------------------------------------------------------------------------------------------
 	//各位置及控制点的描画用材质
 	PositionMaterial = UMaterialInstanceDynamic::Create (GEngine->ArrowMaterial, nullptr);
@@ -65,7 +66,7 @@ void FSplinePathEditorEdMode::Enter()
 //---------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdMode::Exit()
 {
-    //TODO: 清理工作
+	//TODO: 清理工作
 
 	if (Toolkit.IsValid())
 	{
@@ -82,6 +83,7 @@ bool FSplinePathEditorEdMode::UsesToolkits() const
 {
 	return true;
 }
+
 
 //---------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdMode::ActorSelectionChangeNotify() {
@@ -108,13 +110,13 @@ void FSplinePathEditorEdMode::Render (const FSceneView* View, FViewport* Viewpor
 }
 
 //---------------------------------------------------------------------------------------------------
-void FSplinePathEditorEdMode::DrawPath(ASplinePathActor* Actor, FPrimitiveDrawInterface* PDI)
+void FSplinePathEditorEdMode::DrawPath(ASplinePathActor* Actor, FPrimitiveDrawInterface* PDI) const
 {
-    int PointCount = Actor->PathPoints.Num();
+	const int PointCount = Actor->PathPoints.Num();
     for(int i = 0; i < PointCount; i++) {
         const FPathPoint &PathPoint = Actor->PathPoints[i];
-        bool isPointSelected = SelectedPath == Actor && SelectedPathPointIndex == i;
-        DrawPosition(PathPoint.Position, i, isPointSelected, PDI);
+        const bool IsPointSelected = SelectedPath == Actor && SelectedPathPointIndex == i;
+        DrawPosition(PathPoint.Position, i, IsPointSelected, PDI);
         if (PointCount > 1) {
             if (i != 0) {
                 DrawControlPoint(PathPoint, i, false, SelectedControlPointInOut == 0, PDI);
@@ -127,7 +129,8 @@ void FSplinePathEditorEdMode::DrawPath(ASplinePathActor* Actor, FPrimitiveDrawIn
 }
 
 //---------------------------------------------------------------------------------------------------
-void FSplinePathEditorEdMode::DrawPosition(const FVector& Pos, int Index, bool IsSelected, FPrimitiveDrawInterface* PDI){
+void FSplinePathEditorEdMode::DrawPosition(const FVector& Pos, int Index, bool IsSelected, FPrimitiveDrawInterface* PDI) const
+{
     FMaterialRenderProxy* SphereMaterialProxy = IsSelected ?
             SelectedPositionMaterial->GetRenderProxy() :
             PositionMaterial->GetRenderProxy();
@@ -137,7 +140,8 @@ void FSplinePathEditorEdMode::DrawPosition(const FVector& Pos, int Index, bool I
 }
 
 //---------------------------------------------------------------------------------------------------
-void FSplinePathEditorEdMode::DrawControlPoint(const FPathPoint& Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) {
+void FSplinePathEditorEdMode::DrawControlPoint(const FPathPoint& Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) const
+{
     FMaterialRenderProxy * SphereMaterialProxy = IsSelected ?
             SelectedControlPointMaterial->GetRenderProxy() :
             ControlPointMaterial->GetRenderProxy();
@@ -183,3 +187,5 @@ void FSplinePathEditorEdMode::RemovePoint (int32 Index)
 }
 
 //---------------------------------------------------------------------------------------------------
+
+

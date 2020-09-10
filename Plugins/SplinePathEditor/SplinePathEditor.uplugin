@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "SplinePathEdtior",
+	"FriendlyName": "SplinePathEditor",
 	"Description": "GS Job Test",
 	"Category": "Other",
 	"CreatedBy": "Huang Cheng",
@@ -11,12 +11,12 @@
 	"MarketplaceURL": "",
 	"SupportURL": "",
 	"CanContainContent": false,
-	"IsBetaVersion": false,
+	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "SplinePathEdtior",
+			"Name": "SplinePathEditor",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}

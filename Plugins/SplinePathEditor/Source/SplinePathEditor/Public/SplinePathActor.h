@@ -17,8 +17,7 @@ struct FPathPoint
 };
 
 UCLASS()
-class SPLINEPATHEDTIOR_API ASplinePathActor : public AActor
-{
+class SPLINEPATHEDITOR_API ASplinePathActor : public AActor {
 	GENERATED_BODY()
 	
 public:	
