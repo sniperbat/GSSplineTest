@@ -58,9 +58,14 @@ void FSplinePathEditorEdMode::Enter()
 	SelectedControlPointMaterial->SetVectorParameterValue ("GizmoColor", FLinearColor::Green);
 
 	//---------------------------------------------------------------------------------------------------
-    SelectedPathPointOwner = nullptr;
-    SelectedPathPointIndex = -1;
-    SelectedPathPointControl = -1;
+	UWorld* World = GetWorld ();
+	for (TActorIterator<ASplinePathActor> It (World); It; ++It) {
+		PathList.Add (*It);
+	}
+
+	SelectedPathPointOwner = nullptr;
+	SelectedPathPointIndex = -1;
+	SelectedPathPointControl = -1;
 }
 
 //---------------------------------------------------------------------------------------------------
