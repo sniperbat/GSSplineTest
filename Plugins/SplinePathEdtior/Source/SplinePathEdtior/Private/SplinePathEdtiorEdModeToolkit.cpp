@@ -21,19 +21,6 @@ void FSplinePathEdtiorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTo
 		{
 			return true;// GEditor->GetSelectedActors ()->Num () != 0;
 		}
-
-		static FReply OnBtnAddPath()
-		{
-
-		
-			
-		}
-
-		static FReply OnBtnRemovePath ()
-		{
-
-			return FReply::Handled ();
-		}
 	};
 
 	const float Factor = 256.0f;
