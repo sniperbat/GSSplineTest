@@ -78,6 +78,12 @@ public:
 	virtual void Render(const FSceneView* View, FViewport* Viewport, FPrimitiveDrawInterface* PDI) override;
 	virtual void ActorSelectionChangeNotify() override;
 	bool UsesToolkits() const override;
+
+	virtual bool ShowModeWidgets () const override;
+	virtual bool ShouldDrawWidget () const override;
+	virtual bool UsesTransformWidget () const override;
+	virtual FVector GetWidgetLocation () const override;
+	virtual bool InputDelta (FEditorViewportClient* InViewportClient, FViewport* InViewport, FVector& InDrag, FRotator& InRot, FVector& InScale) override;
 	// End of FEdMode interface
 
 	// FEdMode Public Method for Toolkit

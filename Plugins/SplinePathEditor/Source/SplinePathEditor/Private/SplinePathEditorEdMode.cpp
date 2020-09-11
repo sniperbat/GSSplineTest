@@ -16,6 +16,7 @@ const float PositionPointSize = 20;
 const float ControlPointSize (16);
 
 enum {
+	NoSelectedPoint = -1,
 	SelectedControlPointIn,
 	SelectedControlPointOut
 };
@@ -67,8 +68,8 @@ void FSplinePathEditorEdMode::Enter () {
 
 	//切到当前GameMode时，自动获取选中的第一个可操作Actor
 	SelectedPathPointOwner = GEditor->GetSelectedActors ()->GetTop<ASplinePathActor> ();
-	SelectedPathPointIndex = -1;
-	SelectedPathPointControl = -1;
+	SelectedPathPointIndex = NoSelectedPoint;
+	SelectedPathPointControl = NoSelectedPoint;
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -197,15 +198,16 @@ bool FSplinePathEditorEdMode::HandleClick (FEditorViewportClient* InViewportClie
 			HSplinePositionProxy* PositionHitProxy = static_cast<HSplinePositionProxy*>(HitProxy);
 			SelectedPathPointOwner = PositionHitProxy->PathActor;
 			SelectedPathPointIndex = PositionHitProxy->Index;
-			SelectedPathPointControl = -1;
+			SelectedPathPointControl = NoSelectedPoint;
 		} else if (HitProxy->IsA (HSplineControlPointProxy::StaticGetType ())) {
 			//选中控制节点
 			IsHandled = true;
 			HSplineControlPointProxy* ControlHitProxy = static_cast<HSplineControlPointProxy*>(HitProxy);
 			SelectedPathPointOwner = ControlHitProxy->PathActor;
 			SelectedPathPointIndex = ControlHitProxy->Index;
-			SelectedPathPointControl = ControlHitProxy->IsIn ? 0 : 1;
+			SelectedPathPointControl = ControlHitProxy->IsIn ? SelectedControlPointIn : SelectedControlPointOut;
 		}
+	} else {
 	}
 	return IsHandled;
 }
@@ -258,3 +260,71 @@ void FSplinePathEditorEdMode::ToggleShowAll (const bool IsOn) {
 	IsShowAllPath = IsOn;
 }
 
+//---------------------------------------------------------------------------------------------------
+void FSplinePathEditorEdMode::ToggleCanAddPoint (bool IsOn) {
+	CanAddPoint = IsOn;
+}
+
+//---------------------------------------------------------------------------------------------------
+bool FSplinePathEditorEdMode::ShowModeWidgets () const {
+	return true;
+}
+
+//---------------------------------------------------------------------------------------------------
+bool FSplinePathEditorEdMode::ShouldDrawWidget () const {
+	return true;
+}
+
+//---------------------------------------------------------------------------------------------------
+bool FSplinePathEditorEdMode::UsesTransformWidget () const {
+	return true;
+}
+
+//---------------------------------------------------------------------------------------------------
+FVector FSplinePathEditorEdMode::GetWidgetLocation () const {
+	if (SelectedPathPointOwner != nullptr) {
+		if (SelectedPathPointIndex != -1) {
+			const auto Point = SelectedPathPointOwner->PathPoints[SelectedPathPointIndex];
+			switch (SelectedPathPointControl) {
+			case NoSelectedPoint:
+				return Point->Position;
+			case SelectedControlPointIn:
+				return Point->InCtrlPoint;
+			case SelectedControlPointOut:
+				return Point->OutCtrlPoint;
+			default: break;
+			}
+		}
+	}
+	return FEdMode::GetWidgetLocation ();
+}
+
+//---------------------------------------------------------------------------------------------------
+bool FSplinePathEditorEdMode::InputDelta (FEditorViewportClient* InViewportClient, FViewport* InViewport, FVector& InDrag, FRotator& InRot, FVector& InScale) {
+	if (InViewportClient->GetCurrentWidgetAxis () != EAxisList::None && 
+		SelectedPathPointOwner != nullptr && 
+		!InDrag.IsZero ()) {
+		
+		if (SelectedPathPointIndex != -1) {
+			UPathPoint* Point = SelectedPathPointOwner->PathPoints[SelectedPathPointIndex];
+			switch (SelectedPathPointControl) {
+			case NoSelectedPoint:
+				Point->Modify ();
+				Point->Position += InDrag;
+				Point->InCtrlPoint += InDrag;;
+				Point->OutCtrlPoint += InDrag;;
+				return true;
+			case SelectedControlPointIn:
+				Point->Modify ();
+				Point->InCtrlPoint += InDrag;;
+				return true;
+			case SelectedControlPointOut:
+				Point->Modify ();
+				Point->OutCtrlPoint += InDrag;;
+				return true;
+			default: break;
+			}
+		}
+	}
+	return false;
+}
