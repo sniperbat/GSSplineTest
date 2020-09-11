@@ -7,26 +7,26 @@
 #include "SplinePathActor.h"
 
 //---------------------------------------------------------------------------------------------------
-struct HSplinePositionProxy : HHitProxy
-{
+struct HSplinePositionProxy : HHitProxy {
 	DECLARE_HIT_PROXY ();
-	HSplinePositionProxy(int Index): HHitProxy(HPP_Wireframe)
-	{
+	HSplinePositionProxy(ASplinePathActor* PathActor, int Index): HHitProxy(HPP_Wireframe) {
+		this->PathActor = PathActor;
 	    this->Index = Index;
 	}
 
+	ASplinePathActor* PathActor;
 	int Index;
 };
 
 //---------------------------------------------------------------------------------------------------
-struct HSplineControlPointProxy : HHitProxy
-{
+struct HSplineControlPointProxy : HHitProxy {
 	DECLARE_HIT_PROXY ();
-	HSplineControlPointProxy (int Index, bool IsIn) : HHitProxy (HPP_Wireframe)
-	{
+	HSplineControlPointProxy (ASplinePathActor* PathActor, int Index, bool IsIn) : HHitProxy (HPP_Wireframe) {
+		this->PathActor = PathActor;
         this->Index = Index;
         this->IsIn = IsIn;
 	}
+	ASplinePathActor* PathActor;
     int Index;
 	bool IsIn;
 };
@@ -74,6 +74,7 @@ public:
 	virtual void Enter() override;
 	virtual void Exit() override;
 	//virtual void Tick(FEditorViewportClient* ViewportClient, float DeltaTime) override;
+	virtual bool HandleClick (FEditorViewportClient* InViewportClient, HHitProxy* HitProxy, const FViewportClick& Click) override;
 	virtual void Render(const FSceneView* View, FViewport* Viewport, FPrimitiveDrawInterface* PDI) override;
 	virtual void ActorSelectionChangeNotify() override;
 	bool UsesToolkits() const override;
@@ -86,7 +87,7 @@ public:
 	void AddPoint (const FVector& Position) const;
 	void RemovePoint (int32 Index);
 
-	void MakeSplineCurve();
+	void MakeSplineCurve() const;
 
     void ToggleShowAll(bool IsOn);
     // End of Public Method for Toolkit
@@ -94,6 +95,6 @@ public:
 private:
     void DrawPath(ASplinePathActor* Actor, FPrimitiveDrawInterface* PDI) const;
     void DrawPathCurve(ASplinePathActor* PathActor, int StartIndex, int EndIndex, FPrimitiveDrawInterface* PDI) const;
-    void DrawPosition(const FVector& Pos, int Index, bool IsSelected, FPrimitiveDrawInterface* PDI) const;
-    void DrawControlPoint(const UPathPoint* Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) const;
+    void DrawPosition(ASplinePathActor* PathActor, int Index, FPrimitiveDrawInterface* PDI) const;
+    void DrawControlPoint(ASplinePathActor* PathActor, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) const;
 };
