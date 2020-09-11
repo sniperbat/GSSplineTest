@@ -4,17 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "UPathPoint.h"
 #include "SplinePathActor.generated.h"
-
-USTRUCT()
-struct FPathPoint
-{
-	GENERATED_BODY ()
-
-	FVector Position;
-	FVector InCtrlPoint;
-	FVector OutCtrlPoint;
-};
 
 UCLASS()
 class SPLINEPATHEDITOR_API ASplinePathActor : public AActor {
@@ -32,7 +23,20 @@ public:
 	// Called every frame
 	// virtual void Tick(float DeltaTime) override;
 
+	void AddPoint(const FVector& PointPos);
+
+	void InitControlPoints();
+	void MakeSplineCurve();
+
+	int GetTotalPointCount();
+	int GetSplinePointCount();
+	int GetAlternatePointCount();
+
 public:
 	UPROPERTY (EditAnywhere, Category = "Path Points")
-	TArray<FPathPoint> PathPoints;
+	TArray<UPathPoint*> PathPoints;
+
+	UPROPERTY (EditAnywhere, Category = "Path Points")
+	int SplinePointCount;
+
 };

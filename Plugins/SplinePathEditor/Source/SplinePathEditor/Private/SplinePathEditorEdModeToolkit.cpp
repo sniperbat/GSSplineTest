@@ -7,12 +7,15 @@
 #include "Widgets/Text/STextBlock.h"
 #include "EditorModeManager.h"
 
+//----------------------------------------------------------------------------------------------------------------------
 #define LOCTEXT_NAMESPACE "FSplinePathEdtiorEdModeToolkit"
 
+//----------------------------------------------------------------------------------------------------------------------
 FSplinePathEditorEdModeToolkit::FSplinePathEditorEdModeToolkit ()
 {
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 {
 	struct Locals
@@ -31,6 +34,26 @@ void FSplinePathEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTo
 		.IsEnabled_Static(&Locals::IsWidgetEnabled)
 		[
 			SNew(SVerticalBox)
+                        + SVerticalBox::Slot ()
+                                .HAlign (HAlign_Center)
+                                .AutoHeight ()
+                        [
+                                        SNew(SHorizontalBox)
+                                        + SHorizontalBox::Slot()
+                                                .HAlign (HAlign_Center)
+                                                .AutoWidth()
+                                        [
+                                                        SNew (STextBlock)
+                                                        .Text(FText::FromString("Show All Path:"))
+                                        ]
+                                        + SHorizontalBox::Slot()
+                                                .HAlign (HAlign_Center)
+                                                .AutoWidth()
+                                        [
+                                                        SNew (SCheckBox)
+                                                        .OnCheckStateChanged (this, &FSplinePathEditorEdModeToolkit::OnToggleShowAll)
+                                        ]
+                        ]
 			+ SVerticalBox::Slot()
 				.HAlign(HAlign_Center)
 				.AutoHeight()
@@ -53,48 +76,72 @@ void FSplinePathEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTo
 				[
 					SNew (SButton)
 					.Text (FText::FromString ("Add Random Point"))
-				        .OnClicked (this, &FSplinePathEditorEdModeToolkit::OnBtnAddPoint)
+					.OnClicked (this, &FSplinePathEditorEdModeToolkit::OnBtnAddPoint)
 				]
-		];
+              + SVerticalBox::Slot ()
+              .HAlign (HAlign_Center)
+              .AutoHeight ()
+              [
+                      SNew (SButton)
+                      .Text (FText::FromString ("Make Spline"))
+                      .OnClicked (this, &FSplinePathEditorEdModeToolkit::OnBtnMakeSplineCurve)
+                      ]
+
+                        ];
 
 	FModeToolkit::Init(InitToolkitHost);
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 FName FSplinePathEditorEdModeToolkit::GetToolkitFName() const
 {
 	return FName("SplinePathEditorEdMode");
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 FText FSplinePathEditorEdModeToolkit::GetBaseToolkitName() const
 {
 	return NSLOCTEXT("SplinePathEditorEdModeToolkit", "DisplayName", "SplinePathEditorEdMode Tool");
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 class FEdMode* FSplinePathEditorEdModeToolkit::GetEditorMode() const
 {
 	return GLevelEditorModeTools().GetActiveMode(FSplinePathEditorEdMode::EM_SplinePathEditorEdModeId);
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 FReply FSplinePathEditorEdModeToolkit::OnBtnAddPath () const
 {
 	static_cast<FSplinePathEditorEdMode*>(GetEditorMode())->AddPath ();
 	return FReply::Handled ();
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------------------
-FReply FSplinePathEditorEdModeToolkit::OnBtnRemovePath () const {
+//----------------------------------------------------------------------------------------------------------------------
+FReply FSplinePathEditorEdModeToolkit::OnBtnRemovePath () const
+{
 	static_cast<FSplinePathEditorEdMode*>(GetEditorMode ())->RemovePath ();
 	return FReply::Handled ();
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------------------
-FReply FSplinePathEditorEdModeToolkit::OnBtnAddPoint () const {
+//----------------------------------------------------------------------------------------------------------------------
+FReply FSplinePathEditorEdModeToolkit::OnBtnAddPoint () const
+{
 
 	static_cast<FSplinePathEditorEdMode*>(GetEditorMode ())->AddPoint(FMath::VRand () * 50);
 	return FReply::Handled ();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void FSplinePathEditorEdModeToolkit::OnToggleShowAll(ECheckBoxState newState) const
+{
+    static_cast<FSplinePathEditorEdMode*>(GetEditorMode ())->ToggleShowAll(newState == ECheckBoxState::Checked);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+FReply FSplinePathEditorEdModeToolkit::OnBtnMakeSplineCurve () const
+{
+    static_cast<FSplinePathEditorEdMode*>(GetEditorMode ())->MakeSplineCurve();
+    return FReply::Handled ();
 }
 #undef LOCTEXT_NAMESPACE

@@ -10,9 +10,10 @@
 
 //---------------------------------------------------------------------------------------------------
 // 常数定义
-const FVector PositionRadii (10);
-const FVector ControlPointRadii (8);
-
+const FVector PositionRadii (6);
+const FVector ControlPointRadii (4);
+const float PositionPointSize = 20;
+const float ControlPointSize(16);
 //---------------------------------------------------------------------------------------------------
 // 点击测试用HitProxy
 IMPLEMENT_HIT_PROXY (HSplinePositionProxy, HHitProxy);
@@ -62,7 +63,7 @@ void FSplinePathEditorEdMode::Enter ()
 		PathList.Add (*It);
 	}
 
-	SelectedPathPointOwner = nullptr;
+    SelectedPathPointOwner = GEditor->GetSelectedActors ()->GetTop<ASplinePathActor> ();
 	SelectedPathPointIndex = -1;
 	SelectedPathPointControl = -1;
 }
@@ -97,15 +98,17 @@ void FSplinePathEditorEdMode::ActorSelectionChangeNotify () {
 void FSplinePathEditorEdMode::Render (const FSceneView* View, FViewport* Viewport, FPrimitiveDrawInterface* PDI)
 {
 	if (IsShowAllPath) {
-		UWorld* World = GetWorld ();
-		for (TActorIterator<ASplinePathActor> It (World); It; ++It) {
-			DrawPath (*It, PDI);
-		}
+	    if (UWorld* World = GetWorld ())
+	    {
+            for (TActorIterator<ASplinePathActor> It(World); It; ++It)
+            {
+                DrawPath (*It, PDI);
+            }
+	    }
 	}
 	else {
 		for (FSelectionIterator It (GEditor->GetSelectedActorIterator ()); It; ++It) {
-			ASplinePathActor* Actor = Cast<ASplinePathActor> (*It);
-			if (Actor) {
+			if (ASplinePathActor* Actor = Cast<ASplinePathActor> (*It)) {
 				DrawPath (Actor, PDI);
 			}
 		}
@@ -115,24 +118,42 @@ void FSplinePathEditorEdMode::Render (const FSceneView* View, FViewport* Viewpor
 }
 
 //---------------------------------------------------------------------------------------------------
-void FSplinePathEditorEdMode::DrawPath (ASplinePathActor* Actor, FPrimitiveDrawInterface* PDI) const
+void FSplinePathEditorEdMode::DrawPath (ASplinePathActor* PathActor, FPrimitiveDrawInterface* PDI) const
 {
-	const int PointCount = Actor->PathPoints.Num ();
-	for (int i = 0; i < PointCount; i++) {
-		const FPathPoint& PathPoint = Actor->PathPoints[i];
-		const bool IsPointSelected = SelectedPathPointOwner == Actor && SelectedPathPointIndex == i;
-		DrawPosition (PathPoint.Position, i, IsPointSelected, PDI);
+	const int SplinePointCount = PathActor->GetSplinePointCount();
+	for (int i = 0; i < SplinePointCount; i++) {
+		const UPathPoint* PathPoint = PathActor->PathPoints[i];
+		const bool IsPointSelected = SelectedPathPointOwner == PathActor && SelectedPathPointIndex == i;
+		DrawPosition (PathPoint->Position, i, IsPointSelected, PDI);
 
-		if (PointCount > 1) {
-			if (i > 0) {
-				DrawControlPoint (PathPoint, i, false, SelectedPathPointControl == 0, PDI);
+		if (SplinePointCount > 1) {
+			if (i != 0) {
+				DrawControlPoint (PathPoint, i, true, SelectedPathPointControl == 0, PDI);
 			}
-			if (i < PointCount - 1) {
-				DrawControlPoint (PathPoint, i, true, SelectedPathPointControl == 1, PDI);
+			if (i != SplinePointCount - 1) {
+				DrawControlPoint (PathPoint, i, false, SelectedPathPointControl == 1, PDI);
+                //Draw Spline Curve
+                DrawPathCurve(PathActor, i, i+1, PDI);
 			}
 		}
 	}
+
+	const int GetAlternatePointCount = PathActor->GetAlternatePointCount();
+    for (int i = 0; i < GetAlternatePointCount; i++) {
+        const UPathPoint* PathPoint = PathActor->PathPoints[SplinePointCount + i];
+        const bool IsPointSelected = SelectedPathPointOwner == PathActor && SelectedPathPointIndex == i;
+        DrawPosition (PathPoint->Position, i, IsPointSelected, PDI);
+    }
 }
+
+void FSplinePathEditorEdMode::DrawPathCurve (ASplinePathActor* PathActor, int StartIndex, int EndIndex, FPrimitiveDrawInterface* PDI) const
+{
+    const UPathPoint* StartPoint = PathActor->PathPoints[StartIndex];
+    const UPathPoint* EndPoint = PathActor->PathPoints[EndIndex];
+    //临时只画直线
+    PDI->DrawLine (StartPoint->Position, EndPoint->Position, FLinearColor::White, SDPG_Foreground);
+}
+
 
 //---------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdMode::DrawPosition (const FVector& Pos, int Index, bool IsSelected, FPrimitiveDrawInterface* PDI) const
@@ -141,21 +162,25 @@ void FSplinePathEditorEdMode::DrawPosition (const FVector& Pos, int Index, bool 
 		SelectedPositionMaterial->GetRenderProxy () :
 		PositionMaterial->GetRenderProxy ();
 	PDI->SetHitProxy (new HSplinePositionProxy (Index));
-	DrawSphere (PDI, Pos, FRotator::ZeroRotator, PositionRadii, 10, 10, SphereMaterialProxy, SDPG_Foreground);
+	//DrawSphere (PDI, Pos, FRotator::ZeroRotator, PositionRadii, 10, 10, SphereMaterialProxy, SDPG_Foreground);
+	PDI->DrawPoint(Pos, FLinearColor::Red, PositionPointSize, SDPG_Foreground);
 	PDI->SetHitProxy (nullptr);
 }
 
 //---------------------------------------------------------------------------------------------------
-void FSplinePathEditorEdMode::DrawControlPoint (const FPathPoint& Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) const
+void FSplinePathEditorEdMode::DrawControlPoint (const UPathPoint* Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) const
 {
 	FMaterialRenderProxy* SphereMaterialProxy = IsSelected ?
 		SelectedControlPointMaterial->GetRenderProxy () :
 		ControlPointMaterial->GetRenderProxy ();
-	const FVector& CtrlPos = IsIn ? Point.InCtrlPoint : Point.OutCtrlPoint;
+
+	const FVector& CtrlPos = IsIn ? Point->InCtrlPoint : Point->OutCtrlPoint;
+
 	PDI->SetHitProxy (new HSplineControlPointProxy (Index, IsIn));
-	DrawSphere (PDI, CtrlPos, FRotator::ZeroRotator, ControlPointRadii, 10, 10, SphereMaterialProxy, SDPG_Foreground);
+	//DrawSphere (PDI, CtrlPos, FRotator::ZeroRotator, ControlPointRadii, 10, 10, SphereMaterialProxy, SDPG_Foreground);
+    PDI->DrawPoint(CtrlPos, FLinearColor::Yellow, ControlPointSize, SDPG_Foreground);
 	PDI->SetHitProxy (nullptr);
-	PDI->DrawLine (Point.Position, CtrlPos, FLinearColor::Gray, SDPG_Foreground);
+	PDI->DrawLine (Point->Position, CtrlPos, FLinearColor::Gray, SDPG_Foreground);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -185,8 +210,7 @@ void FSplinePathEditorEdMode::RemovePath ()
 //---------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdMode::AddPoint (const FVector& Position) const {
   if (SelectedPathPointOwner != nullptr) {
-	  const FPathPoint Point{ Position };
-	  SelectedPathPointOwner->PathPoints.Add (Point);
+	  SelectedPathPointOwner->AddPoint(Position);
   }
 }
 
@@ -196,5 +220,16 @@ void FSplinePathEditorEdMode::RemovePoint (int32 Index)
 }
 
 //---------------------------------------------------------------------------------------------------
+void FSplinePathEditorEdMode::MakeSplineCurve()
+{
+    if (SelectedPathPointOwner != nullptr) {
+        SelectedPathPointOwner->MakeSplineCurve();
+    }
+}
 
+//---------------------------------------------------------------------------------------------------
+void FSplinePathEditorEdMode::ToggleShowAll(bool IsOn)
+{
+    IsShowAllPath = IsOn;
+}
 

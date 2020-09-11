@@ -46,8 +46,6 @@ class FSplinePathEditorEdMode : public FEdMode
 {
 public:
 	const static FEditorModeID EM_SplinePathEditorEdModeId;
-    UPROPERTY (EditAnywhere)
-    bool IsShowAllPath;
 private:
     UPROPERTY ()
     class UMaterialInstanceDynamic* PositionMaterial;
@@ -61,10 +59,13 @@ private:
     UPROPERTY ()
     class UMaterialInstanceDynamic* SelectedControlPointMaterial;
 
+    UPROPERTY ()
     TArray<ASplinePathActor*> PathList;
+
     TWeakObjectPtr<ASplinePathActor> SelectedPathPointOwner;
     int32 SelectedPathPointIndex;
     int32 SelectedPathPointControl;
+    bool IsShowAllPath;
 public:
 	FSplinePathEditorEdMode ();
 	virtual ~FSplinePathEditorEdMode ();
@@ -84,10 +85,15 @@ public:
 
 	void AddPoint (const FVector& Position) const;
 	void RemovePoint (int32 Index);
+
+	void MakeSplineCurve();
+
+    void ToggleShowAll(bool IsOn);
     // End of Public Method for Toolkit
 
 private:
     void DrawPath(ASplinePathActor* Actor, FPrimitiveDrawInterface* PDI) const;
+    void DrawPathCurve(ASplinePathActor* PathActor, int StartIndex, int EndIndex, FPrimitiveDrawInterface* PDI) const;
     void DrawPosition(const FVector& Pos, int Index, bool IsSelected, FPrimitiveDrawInterface* PDI) const;
-    void DrawControlPoint(const FPathPoint& Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) const;
+    void DrawControlPoint(const UPathPoint* Point, int Index, bool IsIn, bool IsSelected, FPrimitiveDrawInterface* PDI) const;
 };
