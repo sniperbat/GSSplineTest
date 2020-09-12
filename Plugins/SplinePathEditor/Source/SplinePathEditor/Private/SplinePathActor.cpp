@@ -26,9 +26,6 @@ float BezierLength (const FVector& Start, const FVector& End, const FVector& Sta
 }
 
 //------------------------------------------------------------------------
-const float DefaultControlLineLength = 20;
-
-//------------------------------------------------------------------------
 ASplinePathActor::ASplinePathActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -57,11 +54,9 @@ void ASplinePathActor::InitControlPoints()
 	{
 		UPathPoint* StartPoint = PathPoints[i];
 		UPathPoint* EndPoint = PathPoints[i + 1];
-		float Distance = FVector::Distance(EndPoint->Position, StartPoint->Position);
-		Distance = Distance > DefaultControlLineLength * 3 ? DefaultControlLineLength : Distance / 3;
 		FVector Dir = EndPoint->Position - StartPoint->Position;
 		Dir.Normalize();
-		Dir *= Distance;
+		Dir *= FVector::Distance (EndPoint->Position, StartPoint->Position) / 4;
 		StartPoint->OutCtrlPoint = StartPoint->Position + Dir;
 		EndPoint->InCtrlPoint = EndPoint->Position - Dir;
 		RecalculateLength (i);
