@@ -38,7 +38,8 @@ ASplinePathActor::ASplinePathActor()
 void ASplinePathActor::AddPoint(const FVector& PointPos)
 {
 	const FScopedTransaction Transaction(FText::FromString("Add Point"));
-	UPathPoint* Point = NewObject<UPathPoint>();
+	UPathPoint* Point = NewObject<UPathPoint> ();
+	Point->SetFlags(RF_Transactional);
 	Point->Position = PointPos;
 	Modify();
 	PathPoints.Add(Point);
@@ -70,6 +71,8 @@ void ASplinePathActor::InitControlPoints()
 //------------------------------------------------------------------------
 void ASplinePathActor::MakeSplineCurve()
 {
+	const FScopedTransaction Transaction (FText::FromString ("MakeSplineCurve"));
+	Modify();
 	const int TotalPointCount = GetTotalPointCount();
 	if (TotalPointCount > SplinePointCount)
 	{

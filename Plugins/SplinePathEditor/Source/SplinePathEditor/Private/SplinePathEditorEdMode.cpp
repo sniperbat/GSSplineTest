@@ -290,7 +290,6 @@ void FSplinePathEditorEdMode::AddPath ()
 //---------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdMode::RemovePath ()
 {
-				
 	for (FSelectionIterator It (GEditor->GetSelectedActorIterator ()); It; ++It) 
 	{
 		ASplinePathActor* Actor = Cast<ASplinePathActor> (*It);
@@ -343,7 +342,7 @@ void FSplinePathEditorEdMode::ToggleCanAddPoint (const bool IsOn)
 }
 
 //---------------------------------------------------------------------------------------------------
-void ToggleUniteCtrlPoint (const bool IsOn)
+void FSplinePathEditorEdMode::ToggleUniteCtrlPoint (const bool IsOn)
 {
 	IsUniteCtrlPointMove = IsOn;
 }

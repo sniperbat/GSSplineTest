@@ -160,7 +160,7 @@ void FSplinePathEditorEdModeToolkit::OnToggleShowAll(const ECheckBoxState NewSta
 //----------------------------------------------------------------------------------------------------------------------
 void FSplinePathEditorEdModeToolkit::OnToggleUniteCtrlPoint(const ECheckBoxState NewState) const
 {
-	static_cast<FSplinePathEditorEdMode*>(GetEditorMode())->ToggleUniteCtrlPoint(NewState == ECheckBoxState::Checked);
+	static_cast<FSplinePathEditorEdMode*>(GetEditorMode())->ToggleUniteCtrlPoint (NewState == ECheckBoxState::Checked);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

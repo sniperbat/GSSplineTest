@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------
 void UPathPoint::MovePosition (const FVector& InDelta)
 {
+	const FScopedTransaction Transaction (FText::FromString ("Move Path Point Position"));
     Modify ();
     Position += InDelta;
     InCtrlPoint += InDelta;
@@ -12,8 +13,9 @@ void UPathPoint::MovePosition (const FVector& InDelta)
 }
 
 //------------------------------------------------------------------------
-void UPathPoint::MoveInCtrl (const FVector& InDelta, bool IsUniteOut)
+void UPathPoint::MoveInCtrl (const FVector& InDelta, const bool IsUniteOut)
 {
+	const FScopedTransaction Transaction (FText::FromString ("Move In Ctrl Point"));
     Modify ();
     InCtrlPoint += InDelta;
 	if (IsUniteOut)
@@ -25,8 +27,9 @@ void UPathPoint::MoveInCtrl (const FVector& InDelta, bool IsUniteOut)
 }
 
 //------------------------------------------------------------------------
-void UPathPoint::MoveOutCtrl (const FVector& InDelta, bool IsUniteIn)
+void UPathPoint::MoveOutCtrl (const FVector& InDelta, const bool IsUniteIn)
 {
+	const FScopedTransaction Transaction (FText::FromString ("Move Out Ctrl Point"));
     Modify ();
     OutCtrlPoint += InDelta;
 	if (IsUniteIn)
