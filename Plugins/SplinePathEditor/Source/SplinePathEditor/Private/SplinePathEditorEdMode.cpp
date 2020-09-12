@@ -250,16 +250,19 @@ void FSplinePathEditorEdMode::Render (const FSceneView* View, FViewport* Viewpor
 bool FSplinePathEditorEdMode::InputKey (FEditorViewportClient* ViewportClient, FViewport* Viewport, FKey Key, EInputEvent Event)
 {
 	bool IsHandled = false;
-	if (!IsHandled && Event == IE_Released && Key == EKeys::Enter)
+	if (!IsHandled && Event == IE_Released)
 	{
-		MakeSplineCurve ();
-		IsHandled = true;
+		if (Key == EKeys::Enter)
+		{
+			MakeSplineCurve ();
+			IsHandled = true;
+		}		
 	}
 	return IsHandled;
 }
 
 //---------------------------------------------------------------------------------------------------
-bool FSplinePathEditorEdMode::HandleClick (FEditorViewportClient* InViewportClient, HHitProxy* HitProxy, const FViewportClick& Click)
+bool FSplinePathEditorEdMode::HandleClick (FEditorViewportClient* ViewportClient, HHitProxy* HitProxy, const FViewportClick& Click)
 {
 	bool IsHandled = false;
 	if (HitProxy) 
@@ -277,13 +280,10 @@ bool FSplinePathEditorEdMode::HandleClick (FEditorViewportClient* InViewportClie
 			IsHandled = true;
 			SelectPoint(static_cast<HSplinePositionProxy*>(HitProxy), NoSelectedPoint);
 		}
-	}
-	else 
-	{
-		//Ctrl加鼠标左键添加新的候选节点
-		if (Click.IsControlDown() && Click.GetKey () == EKeys::LeftMouseButton) 
+		else if (ViewportClient->IsCtrlPressed() && Click.GetKey () == EKeys::LeftMouseButton)
 		{
-			AddPoint (InViewportClient->GetCursorWorldLocationFromMousePos ().GetOrigin ());
+			const FVector Pos = FMath::RayPlaneIntersection (Click.GetOrigin(), Click.GetDirection(), FPlane (FVector::UpVector, 0));
+			AddPoint (Pos);
 			IsHandled = true;
 		}
 	}
