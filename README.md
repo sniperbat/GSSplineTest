@@ -15,8 +15,11 @@
 * 可以删除曲线Actor，SplinePathEditorEdMode面板中的RemovePath按钮
 * Add Ramdom Point按钮为完成点选添加之前测试用。
 * Make Spline按钮功能和回车键一致，前期测试用。
+* 勾选Show All Path，显示全部的曲线路径，不管是否选中Actor
+* 勾选Unite Control Point，一个路径节点上的2个控制点可以联动，保证曲线顺滑
 
 
 
 ### 已知问题：
 * 不能保存！！可能是内存管理或者序列化问题，造成会编辑器崩溃，待深入研究。
+* 对节点等操作都需要选中SplinePathActor，但是点击场景空白处后会选择其他Actor，可能添加锁定选择功能会好点。
