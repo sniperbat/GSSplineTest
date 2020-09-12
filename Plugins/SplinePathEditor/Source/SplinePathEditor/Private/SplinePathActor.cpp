@@ -107,31 +107,60 @@ FVector ASplinePathActor::GetPositionOnCurve(float Percent)
 }
 
 //------------------------------------------------------------------------
-FVector ASplinePathActor::GetPositionOnSegment(const int Index, float Percent)
+FVector ASplinePathActor::GetPositionOnSegment(const int Index, const float Percent)
 {
 	if (!IsValidPointIndex(Index))
 	{
 		return FVector::ZeroVector;
 	}
-	if (Index == GetSplinePointCount() - 1)
+	if (!IsLoop && Index == GetSplinePointCount () - 1)
 	{
-		//如果最后一个节点直接返回该节点位置
+		//非Loop状态，最后一个节点直接返回该节点位置
 		return PathPoints[Index]->Position;
 	}
+
 	const UPathPoint* Start = PathPoints[Index];
-	const UPathPoint* End = PathPoints[Index + 1];
+	const UPathPoint* End = Index == GetSplinePointCount () - 1 && IsLoop ? PathPoints[0] : PathPoints[Index + 1];
 	return BezierPoint (Start->Position, End->Position, Start->OutCtrlPoint, End->InCtrlPoint, Percent);
 }
 
 //------------------------------------------------------------------------
 void ASplinePathActor::RecalculateLength (const int Index)
 {
-	if (Index >=0 && Index < GetSplinePointCount() - 1)
+	if (Index >=0 && Index < GetSplinePointCount())
 	{
 		const UPathPoint* Start = PathPoints[Index];
-		const UPathPoint* End = PathPoints[Index + 1];
+		//如果是最后一个曲线节点，也要计算到第一个节点的路线长度
+		const UPathPoint* End = Index == GetSplinePointCount () - 1 ? PathPoints[0] : PathPoints[Index + 1];
 		PathPoints[Index]->Length = BezierLength (Start->Position, End->Position, Start->OutCtrlPoint, End->InCtrlPoint);
 	}
 }
 
 //------------------------------------------------------------------------
+void ASplinePathActor::ToggleLoop ()
+{
+	const FScopedTransaction Transaction (FText::FromString ("Toggle Spline Loop"));
+	Modify ();
+	IsLoop = !IsLoop;
+	if (IsLoop)
+	{
+		const int Index = GetSplinePointCount () - 1;
+		//如果控制点没有初始化过则需要重新设置
+		UPathPoint* StartPoint = PathPoints[Index];
+		UPathPoint* EndPoint = PathPoints[0];
+		FVector Dir = EndPoint->Position - StartPoint->Position;
+		Dir.Normalize ();
+		Dir *= FVector::Distance (EndPoint->Position, StartPoint->Position) / 4;
+		if (StartPoint->OutCtrlPoint.IsZero())
+		{
+			StartPoint->OutCtrlPoint = StartPoint->Position + Dir;
+		}
+
+		if (EndPoint->InCtrlPoint.IsZero())
+		{
+			EndPoint->InCtrlPoint = EndPoint->Position - Dir;
+		}
+		//Loop模式，重新计算最后一个节点到头节点的长度
+		RecalculateLength (Index);
+	}
+}

@@ -18,6 +18,7 @@ public:
 
 	void InitControlPoints();
 	void MakeSplineCurve();
+	void ToggleLoop ();
 
 	bool IsValidPointIndex (int Index) const;
 
@@ -35,5 +36,9 @@ public:
 
 	UPROPERTY (EditAnywhere, Category = "Path Points")
 	int SplinePointCount;
+
+	UPROPERTY (EditAnywhere, Category = "Path Points")
+	bool IsLoop;
+	
 
 };

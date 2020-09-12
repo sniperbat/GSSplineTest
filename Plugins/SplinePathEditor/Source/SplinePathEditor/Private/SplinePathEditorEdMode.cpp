@@ -95,6 +95,10 @@ void DrawControlPoint (ASplinePathActor* PathActor, const int Index, const bool 
 //---------------------------------------------------------------------------------------------------
 void DrawPathCurve (ASplinePathActor* PathActor, const int Index, FPrimitiveDrawInterface* PDI)
 {
+	if (!PathActor->IsLoop && Index == PathActor->GetSplinePointCount() - 1)
+	{
+		return;
+	}
 	const int Divide = 50;
 	const float Step = 1 / static_cast<float>(Divide);
 	for(int i = 0; i < Divide; i++)
@@ -118,18 +122,17 @@ void DrawPath (ASplinePathActor* PathActor, FPrimitiveDrawInterface* PDI) {
 
 		if (SplinePointCount > 1) //多于一个节点的情况下需要描画控制点。
 		{
-			if (i != 0) //第一个节点的In控制点不描画
-			{
+			if (i != 0 || PathActor->IsLoop)
+			{ //第一个节点的In控制点不描画, 但是Loop模式需要描画
 				DrawControlPoint (PathActor, i, true, PDI);
 			}
 			
-			if (i != SplinePointCount - 1) //最后一个节点的Out控制点不描画
-			{
+			if (i != SplinePointCount - 1 || PathActor->IsLoop) 
+			{//最后一个节点的Out控制点不描画, 但是Loop模式需要描画
 				DrawControlPoint (PathActor, i, false, PDI);
-				
-				//非最后一个节点时，描画从当前节点到下一个节点的曲线
-				DrawPathCurve (PathActor, i, PDI);
 			}
+
+			DrawPathCurve (PathActor, i, PDI);
 		}
 	}
 
@@ -256,7 +259,15 @@ bool FSplinePathEditorEdMode::InputKey (FEditorViewportClient* ViewportClient, F
 		{
 			MakeSplineCurve ();
 			IsHandled = true;
-		}		
+		}
+		else if (Key == EKeys::L)
+		{
+			if (SelectedPathPointOwner != nullptr)
+			{
+				SelectedPathPointOwner->ToggleLoop ();
+				IsHandled = true;
+			}
+		}
 	}
 	return IsHandled;
 }
