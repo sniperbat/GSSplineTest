@@ -39,6 +39,9 @@ public:
 	int SplinePointCount;
 
 	UPROPERTY (EditAnywhere, Category = "Path Points")
+	float Length;
+	
+	UPROPERTY (EditAnywhere, Category = "Path Points")
 	bool IsLoop;
 	
 

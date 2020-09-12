@@ -122,12 +122,32 @@ bool ASplinePathActor::IsValidPointIndex(const int Index) const
 }
 
 //------------------------------------------------------------------------
-FVector ASplinePathActor::GetPositionOnCurve(float Percent)
+//获取在整个曲线路径中的位置，Percent是整体百分比
+FVector ASplinePathActor::GetPositionOnCurve(const float Percent)
 {
+	//总长度*百分比计算出目标长度
+	const float TargetLength = Length * Percent;
+	float SearchLength = 0;
+	for(int i = 0; i < GetSplinePointCount(); i++)
+	{
+		if (i == GetSplinePointCount() - 1 && !IsLoop)
+		{//如果非Loop状态下，查找到最后一个点，则直接返回最后一个点位置。理论上不应该计算到这个位置，因为总长度不包含这段。
+			return PathPoints[GetSplinePointCount () - 1]->Position;
+		}
+		//每次查找增加一个节点的长度值
+		SearchLength += PathPoints[i]->Length;
+		if (SearchLength > TargetLength)
+		{//在i起始的这个段内
+			const float SegmentPercent = 1 - PathPoints[i]->Length / (SearchLength - TargetLength);
+			return GetPositionOnSegment (i, SegmentPercent);
+		}
+	}
+	
 	return FVector::ZeroVector;
 }
 
 //------------------------------------------------------------------------
+//获取在一个路径段内的位置，Index为Start点的索引，Percent是到下一个点的百分比
 FVector ASplinePathActor::GetPositionOnSegment(const int Index, const float Percent)
 {
 	if (!IsValidPointIndex(Index))
@@ -154,6 +174,16 @@ void ASplinePathActor::RecalculateLength (const int Index)
 		//如果是最后一个曲线节点，也要计算到第一个节点的路线长度
 		const UPathPoint* End = Index == GetSplinePointCount () - 1 ? PathPoints[0] : PathPoints[Index + 1];
 		PathPoints[Index]->Length = BezierLength (Start->Position, End->Position, Start->OutCtrlPoint, End->InCtrlPoint);
+	}
+
+	//计算整条线路的总长度
+	for(int i = 0; i < GetSplinePointCount(); i++)
+	{
+		if (i == GetSplinePointCount() - 1 && !IsLoop)
+		{
+			break;
+		}
+		Length += PathPoints[i]->Length;
 	}
 }
 
