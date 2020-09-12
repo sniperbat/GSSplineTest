@@ -57,7 +57,7 @@ void SelectPoint (HSplinePositionProxy* HitProxy, const int SelectedCtrlPoint)
 //---------------------------------------------------------------------------------------------------
 bool IsPointSelected(ASplinePathActor* PathActor, const int Index)
 {
-	return SelectedPathPointOwner == PathActor && SelectedPathPointIndex == Index;;
+	return SelectedPathPointOwner == PathActor && SelectedPathPointIndex == Index;
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -265,6 +265,14 @@ bool FSplinePathEditorEdMode::InputKey (FEditorViewportClient* ViewportClient, F
 			if (SelectedPathPointOwner != nullptr)
 			{
 				SelectedPathPointOwner->ToggleLoop ();
+				IsHandled = true;
+			}
+		} else if (Key == EKeys::D)
+		{
+			if (HasSelectedPoint() && SelectedPathPointControl == NoSelectedPoint)
+			{
+				SelectedPathPointOwner->RemovePoint (SelectedPathPointIndex);
+				ResetSelection ();
 				IsHandled = true;
 			}
 		}

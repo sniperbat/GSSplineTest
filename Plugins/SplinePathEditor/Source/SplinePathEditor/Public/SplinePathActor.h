@@ -15,6 +15,7 @@ public:
 	ASplinePathActor();
 
 	void AddPoint(const FVector& PointPos);
+	void RemovePoint (int Index);
 
 	void InitControlPoints();
 	void MakeSplineCurve();

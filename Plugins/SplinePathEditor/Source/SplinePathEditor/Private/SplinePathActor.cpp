@@ -43,6 +43,27 @@ void ASplinePathActor::AddPoint(const FVector& PointPos)
 }
 
 //------------------------------------------------------------------------
+void ASplinePathActor::RemovePoint (const int Index)
+{
+	if(IsValidPointIndex(Index))
+	{
+		const FScopedTransaction Transaction (FText::FromString ("Remove Point"));
+		Modify ();
+		if (Index >= GetSplinePointCount())
+		{
+			PathPoints.RemoveAt (Index);
+			return;
+		}
+		PathPoints.RemoveAt (Index);
+		SplinePointCount--;
+		if (Index != 0)
+		{
+			RecalculateLength (Index - 1);
+		}
+	}
+}
+
+//------------------------------------------------------------------------
 void ASplinePathActor::InitControlPoints()
 {
 	int Start = GetSplinePointCount() - 1; //从曲线最后一个节点开始计算
