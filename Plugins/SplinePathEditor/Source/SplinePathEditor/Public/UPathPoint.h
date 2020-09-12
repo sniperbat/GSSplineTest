@@ -19,4 +19,11 @@ public:
 
     UPROPERTY (EditAnywhere, Category = "Path Points")
     FVector OutCtrlPoint;
+
+	UPROPERTY (EditAnywhere, Category = "Path Points")
+	float Length;
+
+	void MovePosition (const FVector& InDelta);
+	void MoveInCtrl (const FVector& InDelta, bool IsUniteOut);
+	void MoveOutCtrl (const FVector& InDelta, bool IsUniteIn);
 };

@@ -12,27 +12,24 @@ class SPLINEPATHEDITOR_API ASplinePathActor : public AActor {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ASplinePathActor();
-
-protected:
-	// Called when the game starts or when spawned
-	// virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	// virtual void Tick(float DeltaTime) override;
 
 	void AddPoint(const FVector& PointPos);
 
 	void InitControlPoints();
 	void MakeSplineCurve();
 
-	int GetTotalPointCount();
-	int GetSplinePointCount();
-	int GetAlternatePointCount();
+	bool IsValidPointIndex (int Index) const;
 
-public:
+	int GetTotalPointCount() const;
+	int GetSplinePointCount() const;
+	int GetAlternatePointCount() const;
+
+	void RecalculateLength (int Index);
+	
+	FVector GetPositionOnCurve (float Percent);
+	FVector GetPositionOnSegment (int Index, float Percent);
+	
 	UPROPERTY (EditAnywhere, Category = "Path Points")
 	TArray<UPathPoint*> PathPoints;
 

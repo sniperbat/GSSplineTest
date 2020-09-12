@@ -31,6 +31,8 @@ private:
 	// FReply OnBtnRemovePoint (int32 Index);
     FReply OnBtnMakeSplineCurve () const;
 
-	void OnToggleShowAll(ECheckBoxState newState) const;
+	void OnToggleShowAll(ECheckBoxState NewState) const;
+	void OnToggleUniteCtrlPoint (const ECheckBoxState NewState) const;
+	void OnToggleCanAddPoint (ECheckBoxState NewState)const;
 
 };
