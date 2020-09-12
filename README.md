@@ -17,6 +17,7 @@
 * Make Spline按钮功能和回车键一致，前期测试用。
 * 勾选Show All Path，显示全部的曲线路径，不管是否选中Actor
 * 勾选Unite Control Point，一个路径节点上的2个控制点可以联动，保证曲线顺滑
+* 各基本操作的UnDo，ReDo功能都有。
 
 
 ### 已知问题：
