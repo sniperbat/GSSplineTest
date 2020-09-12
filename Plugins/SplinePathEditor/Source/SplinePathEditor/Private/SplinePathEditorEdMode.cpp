@@ -247,6 +247,18 @@ void FSplinePathEditorEdMode::Render (const FSceneView* View, FViewport* Viewpor
 }
 
 //---------------------------------------------------------------------------------------------------
+bool FSplinePathEditorEdMode::InputKey (FEditorViewportClient* ViewportClient, FViewport* Viewport, FKey Key, EInputEvent Event)
+{
+	bool IsHandled = false;
+	if (!IsHandled && Event == IE_Released && Key == EKeys::Enter)
+	{
+		MakeSplineCurve ();
+		IsHandled = true;
+	}
+	return IsHandled;
+}
+
+//---------------------------------------------------------------------------------------------------
 bool FSplinePathEditorEdMode::HandleClick (FEditorViewportClient* InViewportClient, HHitProxy* HitProxy, const FViewportClick& Click)
 {
 	bool IsHandled = false;
