@@ -35,7 +35,7 @@ ASplinePathActor::ASplinePathActor()
 void ASplinePathActor::AddPoint(const FVector& PointPos)
 {
 	const FScopedTransaction Transaction(FText::FromString("Add Point"));
-	UPathPoint* Point = NewObject<UPathPoint> ();
+	UPathPoint* Point = NewObject<UPathPoint> (this);
 	Point->SetFlags(RF_Transactional);
 	Point->Position = PointPos;
 	Modify();

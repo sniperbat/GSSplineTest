@@ -48,10 +48,6 @@ class FSplinePathEditorEdMode : public FEdMode
 public:
 	const static FEditorModeID EM_SplinePathEditorEdModeId;
 
-private:
-    UPROPERTY ()
-    TArray<ASplinePathActor*> PathList;
-
 public:
 	FSplinePathEditorEdMode ();
 	virtual ~FSplinePathEditorEdMode ();

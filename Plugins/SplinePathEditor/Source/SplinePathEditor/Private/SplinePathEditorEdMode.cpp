@@ -182,13 +182,6 @@ void FSplinePathEditorEdMode::Enter ()
 		Toolkit->Init (Owner->GetToolkitHost ());
 	}
 
-	//获取场景中所有的ASplinePathActor备用
-	UWorld* World = GetWorld ();
-	for (TActorIterator<ASplinePathActor> It (World); It; ++It) 
-	{
-		PathList.Add (*It);
-	}
-
 	ResetSelection ();
 }
 
@@ -314,7 +307,6 @@ void FSplinePathEditorEdMode::AddPath ()
 {
 	UWorld* World = GEditor->GetEditorWorldContext ().World ();
 	ASplinePathActor* SelectedPath = World->SpawnActor<ASplinePathActor> (FVector::ZeroVector, FRotator::ZeroRotator);
-	PathList.Add (SelectedPath);
 	GEditor->SelectActor (SelectedPath, true, true);
 }
 
@@ -323,13 +315,8 @@ void FSplinePathEditorEdMode::RemovePath ()
 {
 	for (FSelectionIterator It (GEditor->GetSelectedActorIterator ()); It; ++It) 
 	{
-		ASplinePathActor* Actor = Cast<ASplinePathActor> (*It);
-		if (Actor) 
+		if (ASplinePathActor* Actor = Cast<ASplinePathActor> (*It))
 		{
-			PathList.RemoveAll ([&](const ASplinePathActor* PathActor)
-				{
-					return PathActor == Actor;
-				});
 			Actor->Destroy ();
 		}
 	}
