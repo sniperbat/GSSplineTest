@@ -112,6 +112,18 @@ void DrawPathCurve (ASplinePathActor* PathActor, const int Index, FPrimitiveDraw
 }
 
 //---------------------------------------------------------------------------------------------------
+void DrawDirection (const FVector& Start, const FVector& End, const float Length, FPrimitiveDrawInterface* PDI)
+{
+	FVector Dir = End - Start;
+	const float DirMag = Dir.Size ();
+	Dir /= DirMag;
+	FVector YAxis, ZAxis;
+	Dir.FindBestAxisVectors (YAxis, ZAxis);
+	const FMatrix ArrowTM (Dir, YAxis, ZAxis, Start);
+	DrawDirectionalArrow (PDI, ArrowTM, FLinearColor::Red, Length, 10.0f, SDPG_Foreground);
+}
+
+//---------------------------------------------------------------------------------------------------
 void DrawPath (ASplinePathActor* PathActor, FPrimitiveDrawInterface* PDI) {
 	//首先描画所有正式包含入路径曲线的节点
 	const int SplinePointCount = PathActor->GetSplinePointCount ();
@@ -119,6 +131,14 @@ void DrawPath (ASplinePathActor* PathActor, FPrimitiveDrawInterface* PDI) {
 	{
 		//描画位置节点
 		DrawPosition (PathActor, i, PDI);
+
+		//描画路径方向箭头
+		const int ArrowIndex = i < SplinePointCount - 1 ? i : i -1;
+		const float PercentStart = i < SplinePointCount - 1 ? 0 : 0.99f;
+		const float PercentEnd = i < SplinePointCount - 1 ? 0.01f : 1.0f;
+		FVector Start = PathActor->GetPositionOnSegment (ArrowIndex, PercentStart);
+		FVector End = PathActor->GetPositionOnSegment (ArrowIndex, PercentEnd);
+		DrawDirection (Start, End, PathActor->PathPoints[ArrowIndex]->Length / 10, PDI);
 
 		if (SplinePointCount > 1) //多于一个节点的情况下需要描画控制点。
 		{
@@ -142,7 +162,9 @@ void DrawPath (ASplinePathActor* PathActor, FPrimitiveDrawInterface* PDI) {
 	{
 		DrawPosition (PathActor, SplinePointCount + i, PDI);
 	}
+
 }
+
 
 //---------------------------------------------------------------------------------------------------
 bool HasSelectedPoint ()
